@@ -42,7 +42,6 @@ public class BuildStageRecord extends PanacheEntity {
     String buildStage;
     long duration;
     String buildId;
-    String buildConfigId;
 
     Instant timestamp;
 
@@ -52,20 +51,5 @@ public class BuildStageRecord extends PanacheEntity {
 
     public static List<BuildStageRecord> getForBuildId(int buildId) {
         return getForBuildId(String.valueOf(buildId));
-    }
-
-    public static Map<String, List<BuildStageRecord>> getForBuildConfigId(String buildConfigId, int amount) {
-
-        List<String> buildIds = Panache.getEntityManager()
-                .createQuery("SELECT DISTINCT buildId " + "FROM BuildStageRecord WHERE buildConfigId = :buildConfigId "
-                        + "ORDER BY buildId DESC", String.class)
-                .setParameter("buildConfigId", buildConfigId).setMaxResults(amount).getResultList();
-
-        Stream<BuildStageRecord> temp = find("buildId IN ?1", buildIds).stream();
-        return temp.collect(Collectors.groupingBy(BuildStageRecord::getBuildId));
-    }
-
-    public static Map<String, List<BuildStageRecord>> getForBuildConfigId(int buildConfigId, int amount) {
-        return getForBuildConfigId(String.valueOf(buildConfigId), amount);
     }
 }

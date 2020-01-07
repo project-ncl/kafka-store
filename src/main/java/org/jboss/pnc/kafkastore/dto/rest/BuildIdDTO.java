@@ -15,27 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.kafkastore.rest;
+package org.jboss.pnc.kafkastore.dto.rest;
 
-import io.quarkus.test.junit.QuarkusTest;
-import io.restassured.http.ContentType;
-import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+import lombok.Data;
 
-import javax.transaction.Transactional;
+import java.util.List;
 
-import java.time.Instant;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.*;
-
-@QuarkusTest
-@Disabled
-// TODO: rewrite it
-class MainRestTest {
+@Data
+public class BuildIdDTO {
+    List<String> buildIds;
 }

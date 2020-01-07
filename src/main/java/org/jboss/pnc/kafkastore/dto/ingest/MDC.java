@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.kafkastore.dto;
+package org.jboss.pnc.kafkastore.dto.ingest;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -23,22 +23,18 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.time.Instant;
-
 @Getter
 @Setter
-@ToString
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class KafkaMessageDTO {
+@ToString
+public class MDC {
 
-    MDC mdc;
+    String processContext;
+    String requestContext;
 
-    /**
-     * Value is in milliseconds
-     */
-    long operationTook;
-    String loggerName;
+    @JsonProperty("process_stage_name")
+    String processStageName;
 
-    @JsonProperty("@timestamp")
-    Instant timestamp;
+    @JsonProperty("process_stage_step")
+    String processStageStep;
 }

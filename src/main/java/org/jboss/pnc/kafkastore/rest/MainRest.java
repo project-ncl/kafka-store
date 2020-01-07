@@ -17,44 +17,36 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
+import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
+import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
+import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
+import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import java.util.List;
-import java.util.Map;
 
 @Path("/")
+@ApplicationScoped
 public class MainRest {
 
-    public static final int DEFAULT_SIZE_BUILD_ID = 5;
+    @Inject
+    BuildMetricsFetcher buildMetricsFetcher;
 
     @GET
     public long getCount() {
         return BuildStageRecord.count();
     }
 
-    @GET
-    @Path("/build/{build-id}")
+    @POST
+    @Path("/builds")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<BuildStageRecord> getBuildMetricsForBuildId(@PathParam("build-id") String buildId) {
-        return BuildStageRecord.getForBuildId(buildId);
-    }
-
-    @GET
-    @Path("/build-config/{build-config-id}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Map<String, List<BuildStageRecord>> getBuildMetricsForBuildConfigId(
-            @PathParam("build-config-id") String buildConfigId, @QueryParam("size") Integer size) {
-
-        if (size == null) {
-            size = DEFAULT_SIZE_BUILD_ID;
-        }
-
-        return BuildStageRecord.getForBuildConfigId(buildConfigId, size);
+    public List<BuildMetricDTO> getBuildMetricsForBuildId(BuildIdDTO buildIdDTO) {
+        return buildMetricsFetcher.getMetricForBuildIds(buildIdDTO);
     }
 }

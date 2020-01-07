@@ -20,7 +20,7 @@ package org.jboss.pnc.kafkastore.kafka;
 import io.reactivex.Flowable;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
-import org.jboss.pnc.kafkastore.dto.KafkaMessageDTO;
+import org.jboss.pnc.kafkastore.dto.ingest.KafkaMessageDTO;
 import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;

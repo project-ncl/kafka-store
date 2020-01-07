@@ -15,26 +15,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.pnc.kafkastore.dto;
+package org.jboss.pnc.kafkastore.dto.rest;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 
-@Getter
-@Setter
-@JsonIgnoreProperties(ignoreUnknown = true)
-@ToString
-public class MDC {
+import java.util.ArrayList;
+import java.util.List;
 
-    String processContext;
-    String requestContext;
+public class BuildMetricDTO {
 
-    @JsonProperty("process_stage_name")
-    String processStageName;
+    @Getter
+    String name;
 
-    @JsonProperty("process_stage_step")
-    String processStageStep;
+    @Getter
+    List<Long> data = new ArrayList<>();
+
+    public BuildMetricDTO(String name) {
+        this.name = name;
+    }
+
+    public void addData(long duration) {
+        data.add(duration);
+    }
 }
