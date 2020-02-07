@@ -44,7 +44,10 @@ public class BuildStageRecordMapper {
 
             if (kafkaMessageDTO.getMdc() != null
                     && kafkaMessageDTO.getMdc().getProcessStageName() != null
+                    && kafkaMessageDTO.getMdc().getProcessContext() != null
+                    && kafkaMessageDTO.getMdc().getProcessStageStep() != null
                     && kafkaMessageDTO.getMdc().getProcessStageStep().equals("END")
+                    && kafkaMessageDTO.getTimestamp() != null
                     && kafkaMessageDTO.getOperationTook() != null) {
 
                 BuildStageRecord buildStageRecord = new BuildStageRecord();

@@ -45,21 +45,24 @@ public class Consumer {
      * @throws Exception
      */
     @Incoming("duration")
-    public void consume(String jsonString) throws Exception {
+    public void consume(String jsonString) {
         System.out.print(".");
 
-        // log.info("Incoming: {}", jsonString);
-        Optional<BuildStageRecord> buildStageRecord = mapper.mapKafkaMsgToBuildStageRecord(jsonString);
+        try {
+            Optional<BuildStageRecord> buildStageRecord = mapper.mapKafkaMsgToBuildStageRecord(jsonString);
 
-        // TODO: handle error better
-        // do this because method running in an IO thread and we can only store a POJO in a worker thread
-        buildStageRecord.ifPresent(br -> {
-            log.info(br.toString());
-            CompletableFuture.runAsync(() -> store(br)).exceptionally(e -> {
-                e.printStackTrace();
-                return null;
+            // TODO: handle error better
+            // do this because method running in an IO thread and we can only store a POJO in a worker thread
+            buildStageRecord.ifPresent(br -> {
+                log.info(br.toString());
+                CompletableFuture.runAsync(() -> store(br)).exceptionally(e -> {
+                    e.printStackTrace();
+                    return null;
+                });
             });
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Transactional
