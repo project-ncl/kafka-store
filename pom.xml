@@ -57,6 +57,16 @@
       </developer>
     </developers>
 
+    <repositories>
+      <repository>
+        <id>Nexus Staging</id>
+        <url>https://oss.sonatype.org/content/groups/staging</url>
+        <snapshots>
+          <enabled>false</enabled>
+        </snapshots>
+      </repository>
+    </repositories>
+
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <surefire-plugin.version>2.22.2</surefire-plugin.version>
