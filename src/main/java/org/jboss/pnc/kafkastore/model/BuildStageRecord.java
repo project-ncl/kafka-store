@@ -18,7 +18,6 @@
 package org.jboss.pnc.kafkastore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.quarkus.hibernate.orm.panache.Panache;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import io.quarkus.panache.common.Sort;
 import lombok.Getter;
@@ -26,17 +25,18 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
+
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
 @Setter
 @Entity
 @ToString
+@Table(indexes = { @Index(name = "idx_build_ids", columnList = "buildid") })
 public class BuildStageRecord extends PanacheEntity {
 
     String buildStage;
