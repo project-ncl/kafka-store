@@ -17,6 +17,7 @@
  */
 package org.jboss.pnc.kafkastore.facade;
 
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
@@ -28,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @ApplicationScoped
+@Timed
 public class BuildMetricsFetcher {
 
     public List<BuildMetricDTO> getMetricForBuildIds(BuildIdDTO buildIdDTO) {

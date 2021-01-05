@@ -18,6 +18,7 @@
 package org.jboss.pnc.kafkastore.common;
 
 import com.google.common.collect.ImmutableList;
+import org.eclipse.microprofile.metrics.annotation.Timed;
 import sun.awt.image.ImageWatched;
 
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ public class SortedSetOrder {
 
     ArrayList<String> sorted = new ArrayList<>();
 
+    @Timed
     public SortedSetOrder addList(List<String> toAdd) {
 
         if (sorted.isEmpty()) {

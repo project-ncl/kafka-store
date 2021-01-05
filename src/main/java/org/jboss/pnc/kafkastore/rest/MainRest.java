@@ -17,6 +17,8 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
+import org.eclipse.microprofile.metrics.annotation.Timed;
+
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
 import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
@@ -33,6 +35,7 @@ import java.util.List;
 
 @Path("/")
 @ApplicationScoped
+@Timed
 public class MainRest {
 
     @Inject

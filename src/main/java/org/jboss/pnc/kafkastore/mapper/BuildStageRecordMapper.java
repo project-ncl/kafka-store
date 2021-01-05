@@ -20,17 +20,31 @@ package org.jboss.pnc.kafkastore.mapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.prometheus.client.Counter;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.microprofile.metrics.MetricUnits;
+import org.eclipse.microprofile.metrics.annotation.Timed;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.jboss.pnc.kafkastore.dto.ingest.KafkaMessageDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.ws.rs.GET;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
 import java.io.IOException;
 import java.util.Optional;
 
 @ApplicationScoped
+@Timed
 @Slf4j
 public class BuildStageRecordMapper {
+
+    static final Counter exceptionsTotal = Counter.build()
+            .name("BuildStageRecordMapper_Exceptions_Total")
+            .help("Errors and Warnings counting metric")
+            .labelNames("severity")
+            .register();
 
     ObjectMapper mapper = new ObjectMapper().findAndRegisterModules()
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
@@ -60,6 +74,7 @@ public class BuildStageRecordMapper {
             }
 
         } catch (IOException e) {
+            exceptionsTotal.labels("error").inc();
             throw new BuildStageRecordMapperException(e);
         }
     }
@@ -69,6 +84,7 @@ public class BuildStageRecordMapper {
         try {
             return mapper.writeValueAsString(kafkaMessageDTO);
         } catch (IOException e) {
+            exceptionsTotal.labels("error").inc();
             throw new BuildStageRecordMapperException(e);
         }
     }
@@ -89,5 +105,19 @@ public class BuildStageRecordMapper {
         } else {
             return processContext;
         }
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Gauge(name = "BuildStageRecordMapper_Err_Count", unit = MetricUnits.NONE, description = "Errors count")
+    public int showCurrentErrCount() {
+        return (int) exceptionsTotal.labels("error").get();
+    }
+
+    @GET
+    @Produces(MediaType.TEXT_PLAIN)
+    @Gauge(name = "BuildStageRecordMapper_Warn_Count", unit = MetricUnits.NONE, description = "Warnings count")
+    public int showCurrentWarnCount() {
+        return (int) exceptionsTotal.labels("warning").get();
     }
 }
