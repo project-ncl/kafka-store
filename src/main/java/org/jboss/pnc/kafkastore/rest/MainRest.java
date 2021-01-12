@@ -17,6 +17,9 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
+import io.micrometer.core.annotation.Counted;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
 import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
@@ -38,6 +41,12 @@ public class MainRest {
     @Inject
     BuildMetricsFetcher buildMetricsFetcher;
 
+    private final MeterRegistry registry;
+
+    MainRest(MeterRegistry registry) {
+        this.registry = registry;
+    }
+
     @GET
     public long getCount() {
         return BuildStageRecord.count();
@@ -46,6 +55,8 @@ public class MainRest {
     @POST
     @Path("/builds")
     @Produces(MediaType.APPLICATION_JSON)
+    @Timed
+    @Counted(value = "getBuildMetricsForBuildId.total.invocations")
     public List<BuildMetricDTO> getBuildMetricsForBuildId(BuildIdDTO buildIdDTO) {
         return buildMetricsFetcher.getMetricForBuildIds(buildIdDTO);
     }

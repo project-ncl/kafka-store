@@ -17,6 +17,9 @@
  */
 package org.jboss.pnc.kafkastore.kafka;
 
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
@@ -38,12 +41,21 @@ public class Consumer {
     @Inject
     BuildStageRecordMapper mapper;
 
+    private final MeterRegistry registry;
+    private final Counter errCounter;
+
+    Consumer(MeterRegistry registry) {
+        this.registry = registry;
+        this.errCounter = registry.counter("error.count");
+    }
+
     /**
      * Main method to consume information from a Kafka topic into the database.
      *
      * @param jsonString
      * @throws Exception
      */
+    @Timed
     @Incoming("duration")
     public void consume(String jsonString) {
         System.out.print(".");
@@ -56,15 +68,18 @@ public class Consumer {
             buildStageRecord.ifPresent(br -> {
                 log.info(br.toString());
                 CompletableFuture.runAsync(() -> store(br)).exceptionally(e -> {
+                    errCounter.increment();
                     log.error("Error while saving data", e);
                     return null;
                 });
             });
         } catch (Exception e) {
+            errCounter.increment();
             log.error("Something wrong happened during consumption", e);
         }
     }
 
+    @Timed
     @Transactional
     void store(BuildStageRecord message) {
         message.persist();

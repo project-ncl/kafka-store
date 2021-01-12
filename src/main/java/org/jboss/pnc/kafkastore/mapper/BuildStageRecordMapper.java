@@ -20,6 +20,9 @@ package org.jboss.pnc.kafkastore.mapper;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.pnc.kafkastore.dto.ingest.KafkaMessageDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
@@ -36,6 +39,15 @@ public class BuildStageRecordMapper {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
+    private final MeterRegistry registry;
+    private final Counter errCounter;
+
+    BuildStageRecordMapper(MeterRegistry registry) {
+        this.registry = registry;
+        this.errCounter = registry.counter("error.count");
+    }
+
+    @Timed
     public Optional<BuildStageRecord> mapKafkaMsgToBuildStageRecord(String jsonString)
             throws BuildStageRecordMapperException {
 
@@ -60,6 +72,7 @@ public class BuildStageRecordMapper {
             }
 
         } catch (IOException e) {
+            errCounter.increment();
             throw new BuildStageRecordMapperException(e);
         }
     }
@@ -69,6 +82,7 @@ public class BuildStageRecordMapper {
         try {
             return mapper.writeValueAsString(kafkaMessageDTO);
         } catch (IOException e) {
+            errCounter.increment();
             throw new BuildStageRecordMapperException(e);
         }
     }
