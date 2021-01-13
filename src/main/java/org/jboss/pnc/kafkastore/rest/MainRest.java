@@ -56,7 +56,6 @@ public class MainRest {
     @Path("/builds")
     @Produces(MediaType.APPLICATION_JSON)
     @Timed
-    @Counted(value = "getBuildMetricsForBuildId.total.invocations")
     public List<BuildMetricDTO> getBuildMetricsForBuildId(BuildIdDTO buildIdDTO) {
         return buildMetricsFetcher.getMetricForBuildIds(buildIdDTO);
     }

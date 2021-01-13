@@ -19,7 +19,6 @@ package org.jboss.pnc.kafkastore.facade;
 
 import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
@@ -41,7 +40,6 @@ public class BuildMetricsFetcher {
     }
 
     @Timed
-    @Counted(value = "getMetricForBuildIds.total.invocations")
     public List<BuildMetricDTO> getMetricForBuildIds(BuildIdDTO buildIdDTO) {
 
         List<BuildMetricDTO> response = new LinkedList<>();
