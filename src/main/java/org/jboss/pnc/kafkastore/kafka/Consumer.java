@@ -25,6 +25,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -41,12 +42,14 @@ public class Consumer {
     @Inject
     BuildStageRecordMapper mapper;
 
-    private final MeterRegistry registry;
-    private final Counter errCounter;
+    @Inject
+    MeterRegistry registry;
 
-    Consumer(MeterRegistry registry) {
-        this.registry = registry;
-        this.errCounter = registry.counter("error.count");
+    Counter errCounter;
+
+    @PostConstruct
+    void initMetrics() {
+        errCounter = registry.counter("error.count");
     }
 
     /**

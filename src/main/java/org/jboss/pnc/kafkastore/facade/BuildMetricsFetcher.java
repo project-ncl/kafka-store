@@ -17,9 +17,7 @@
  */
 package org.jboss.pnc.kafkastore.facade;
 
-import io.micrometer.core.annotation.Counted;
 import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.MeterRegistry;
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
@@ -32,12 +30,6 @@ import java.util.List;
 
 @ApplicationScoped
 public class BuildMetricsFetcher {
-
-    private final MeterRegistry registry;
-
-    BuildMetricsFetcher(MeterRegistry registry) {
-        this.registry = registry;
-    }
 
     @Timed
     public List<BuildMetricDTO> getMetricForBuildIds(BuildIdDTO buildIdDTO) {

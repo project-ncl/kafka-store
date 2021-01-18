@@ -41,11 +41,8 @@ public class MainRest {
     @Inject
     BuildMetricsFetcher buildMetricsFetcher;
 
-    private final MeterRegistry registry;
-
-    MainRest(MeterRegistry registry) {
-        this.registry = registry;
-    }
+    @Inject
+    MeterRegistry registry;
 
     @GET
     public long getCount() {
