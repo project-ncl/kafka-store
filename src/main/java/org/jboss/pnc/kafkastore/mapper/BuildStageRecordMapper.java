@@ -27,7 +27,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.jboss.pnc.kafkastore.dto.ingest.KafkaMessageDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
+import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.inject.Inject;
 import java.io.IOException;
 import java.util.Optional;
 
@@ -39,12 +41,14 @@ public class BuildStageRecordMapper {
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
 
-    private final MeterRegistry registry;
-    private final Counter errCounter;
+    @Inject
+    MeterRegistry registry;
 
-    BuildStageRecordMapper(MeterRegistry registry) {
-        this.registry = registry;
-        this.errCounter = registry.counter("error.count");
+    Counter errCounter;
+
+    @PostConstruct
+    void initMetrics() {
+        errCounter = registry.counter("error.count");
     }
 
     @Timed
