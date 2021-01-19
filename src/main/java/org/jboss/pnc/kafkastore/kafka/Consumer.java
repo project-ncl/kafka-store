@@ -39,17 +39,19 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class Consumer {
 
+    private static final String className = Consumer.class.getName();
+
     @Inject
     BuildStageRecordMapper mapper;
 
     @Inject
     MeterRegistry registry;
 
-    Counter errCounter;
+    private Counter errCounter;
 
     @PostConstruct
     void initMetrics() {
-        errCounter = registry.counter("error.count");
+        errCounter = registry.counter(className + ".error.count");
     }
 
     /**

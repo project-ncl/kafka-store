@@ -37,6 +37,8 @@ import java.util.Optional;
 @Slf4j
 public class BuildStageRecordMapper {
 
+    private static final String className = BuildStageRecordMapper.class.getName();
+
     ObjectMapper mapper = new ObjectMapper().findAndRegisterModules()
             .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
             .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false);
@@ -44,11 +46,11 @@ public class BuildStageRecordMapper {
     @Inject
     MeterRegistry registry;
 
-    Counter errCounter;
+    private Counter errCounter;
 
     @PostConstruct
     void initMetrics() {
-        errCounter = registry.counter("error.count");
+        errCounter = registry.counter(className + ".error.count");
     }
 
     @Timed
