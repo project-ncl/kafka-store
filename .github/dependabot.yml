@@ -1,0 +1,20 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "13:00"
+    timezone: America/New_York
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.mycila:license-maven-plugin
+    versions:
+    - "4.0"
+    - "4.1"
+  - dependency-name: io.quarkus:quarkus-maven-plugin
+    versions:
+    - 1.13.0.Final
+  - dependency-name: io.quarkus:quarkus-bom
+    versions:
+    - 1.13.0.Final
