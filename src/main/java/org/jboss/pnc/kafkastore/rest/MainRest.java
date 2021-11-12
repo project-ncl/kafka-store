@@ -20,7 +20,9 @@ package org.jboss.pnc.kafkastore.rest;
 import io.micrometer.core.annotation.Timed;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
+import org.jboss.pnc.kafkastore.dto.rest.BuildStageRecordDTO;
 import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
+import org.jboss.pnc.kafkastore.facade.BuildStageRecordFetcher;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -30,6 +32,8 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
+
+import java.time.Instant;
 import java.util.List;
 
 @Path("/")
@@ -38,6 +42,9 @@ public class MainRest {
 
     @Inject
     BuildMetricsFetcher buildMetricsFetcher;
+
+    @Inject
+    BuildStageRecordFetcher buildStageRecordFetcher;
 
     @GET
     public long getCount() {
@@ -50,5 +57,11 @@ public class MainRest {
     @Timed
     public List<BuildMetricDTO> getBuildMetricsForBuildId(BuildIdDTO buildIdDTO) {
         return buildMetricsFetcher.getMetricForBuildIds(buildIdDTO);
+    }
+
+    @GET
+    @Path("/build-stages-newer-than-timestamp")
+    public List<BuildStageRecordDTO> getAllBuildStageRecordsNewerThanTimestamp(long timestamp) {
+        return buildStageRecordFetcher.findBuildStageRecordNewerThan(Instant.ofEpochMilli(timestamp));
     }
 }

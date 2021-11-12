@@ -19,6 +19,7 @@ package org.jboss.pnc.kafkastore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,6 +29,8 @@ import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.Instant;
 import java.util.List;
 
@@ -36,7 +39,9 @@ import java.util.List;
 @Setter
 @Entity
 @ToString
-@Table(indexes = { @Index(name = "idx_build_ids", columnList = "buildid") })
+@Table(
+        indexes = { @Index(name = "idx_build_ids", columnList = "buildid"),
+                @Index(name = "idx_lastupdate_time", columnList = "lastupdatetime") })
 public class BuildStageRecord extends PanacheEntity {
 
     String buildStage;
@@ -47,11 +52,21 @@ public class BuildStageRecord extends PanacheEntity {
 
     Instant timestamp;
 
+    @UpdateTimestamp
+    Instant lastUpdateTime;
+
     public static List<BuildStageRecord> getForBuildId(String buildId) {
         return list("buildId", Sort.by("timestamp").ascending(), buildId);
     }
 
     public static List<BuildStageRecord> getForBuildId(int buildId) {
         return getForBuildId(String.valueOf(buildId));
+    }
+
+    public static List<BuildStageRecord> findNewerThan(Instant lastUpdate) {
+        return find(
+                "lastUpdateTime > :lastUpdate",
+                Sort.by("lastUpdateTime").ascending(),
+                Parameters.with("lastUpdate", lastUpdate)).list();
     }
 }

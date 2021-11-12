@@ -17,16 +17,30 @@
  */
 package org.jboss.pnc.kafkastore.model;
 
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.time.Instant;
+import java.util.List;
 
 import javax.transaction.Transactional;
 
-import static org.assertj.core.api.Assertions.*;
+import org.jboss.pnc.kafkastore.dto.rest.BuildStageRecordDTO;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 class BuildStageRecordTest {
+
+    private static final Logger log = LoggerFactory.getLogger(BuildStageRecordTest.class);
 
     @Test
     void getForBuildId() {
@@ -36,6 +50,39 @@ class BuildStageRecordTest {
             createBuildStageRecordWithBuildId(buildId, "test", 123, "processVariant");
         }
         assertThat(BuildStageRecord.getForBuildId("5")).hasSize(15);
+    }
+
+    @Test
+    void testLastUpdateTime() {
+
+        String buildId = "13";
+        createBuildStageRecordWithBuildId(buildId, "testLastUpdate", 123);
+        List<BuildStageRecord> buildStageRecords = BuildStageRecord.getForBuildId("13");
+        assertThat(buildStageRecords).hasSize(1);
+        BuildStageRecord buildStageRecord = buildStageRecords.get(0);
+        assertNotNull(buildStageRecord.getLastUpdateTime());
+
+        Instant lastUpdateTime = buildStageRecord.getLastUpdateTime();
+        log.info("Last update time of inserted build stage record: {}", lastUpdateTime);
+
+        List<BuildStageRecord> postBuildStageRecords = BuildStageRecord.findNewerThan(lastUpdateTime);
+        log.info("Asserting that no build stage record exists after last update time: {}", lastUpdateTime);
+        assertThat(postBuildStageRecords).doesNotContain(buildStageRecord);
+
+        Instant priorOfLastUpdateTime = lastUpdateTime.minusSeconds(1);
+        List<BuildStageRecord> priorBuildStageRecords = BuildStageRecord.findNewerThan(priorOfLastUpdateTime);
+        log.info(
+                "Asserting that one build stage record exists after a prior last update time: {}",
+                priorOfLastUpdateTime);
+        assertThat(priorBuildStageRecords).contains(buildStageRecord);
+
+        ObjectMapper mapper = new ObjectMapper().findAndRegisterModules()
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+                .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+        BuildStageRecordDTO dto = mapper.convertValue(buildStageRecord, BuildStageRecordDTO.class);
+        log.info("Converted buildStageRecord model object to DTO: {}", dto);
     }
 
     // *****************************************************************************************************************
