@@ -17,13 +17,8 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
-import io.micrometer.core.annotation.Timed;
-import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
-import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
-import org.jboss.pnc.kafkastore.dto.rest.BuildStageRecordDTO;
-import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
-import org.jboss.pnc.kafkastore.facade.BuildStageRecordFetcher;
-import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+import java.time.Instant;
+import java.util.List;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -31,10 +26,17 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 
-import java.time.Instant;
-import java.util.List;
+import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
+import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
+import org.jboss.pnc.kafkastore.dto.rest.PagedBuildStageRecordDTO;
+import org.jboss.pnc.kafkastore.facade.BuildMetricsFetcher;
+import org.jboss.pnc.kafkastore.facade.BuildStageRecordFetcher;
+import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+
+import io.micrometer.core.annotation.Timed;
 
 @Path("/")
 @ApplicationScoped
@@ -61,7 +63,11 @@ public class MainRest {
 
     @GET
     @Path("/build-stages-newer-than-timestamp")
-    public List<BuildStageRecordDTO> getAllBuildStageRecordsNewerThanTimestamp(long timestamp) {
-        return buildStageRecordFetcher.findBuildStageRecordNewerThan(Instant.ofEpochMilli(timestamp));
+    public PagedBuildStageRecordDTO getAllBuildStageRecordsNewerThanTimestamp(
+            @QueryParam("timestamp") long timestamp,
+            @QueryParam("pageIndex") int pageIndex,
+            @QueryParam("pageSize") int pageSize) {
+        return buildStageRecordFetcher
+                .findBuildStageRecordNewerThan(Instant.ofEpochMilli(timestamp), pageIndex, pageSize);
     }
 }

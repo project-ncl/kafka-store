@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 
 import org.jboss.pnc.kafkastore.dto.rest.BuildStageRecordDTO;
+import org.jboss.pnc.kafkastore.dto.rest.PagedBuildStageRecordDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,10 +48,16 @@ public class BuildStageRecordFetcher {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Timed
-    public List<BuildStageRecordDTO> findBuildStageRecordNewerThan(Instant lastUpdateTime) {
+    public PagedBuildStageRecordDTO findBuildStageRecordNewerThan(
+            Instant lastUpdateTime,
+            Integer pageIndex,
+            Integer pageSize) {
 
-        List<BuildStageRecord> buildStageRecordList = BuildStageRecord.findNewerThan(lastUpdateTime);
-        List<BuildStageRecordDTO> response = Optional.ofNullable(buildStageRecordList)
+        Long totalHits = BuildStageRecord.countNewerThan(lastUpdateTime);
+        Integer totalPages = BuildStageRecord.countPagesNewerThan(lastUpdateTime, pageSize);
+        List<BuildStageRecord> pagedBuildStageRecordList = BuildStageRecord
+                .findNewerThan(lastUpdateTime, pageIndex, pageSize);
+        List<BuildStageRecordDTO> content = Optional.ofNullable(pagedBuildStageRecordList)
                 .orElse(Collections.emptyList())
                 .stream()
                 .map(buildStageRecord -> {
@@ -63,6 +70,13 @@ public class BuildStageRecordFetcher {
                 })
                 .collect(Collectors.toList());
 
+        PagedBuildStageRecordDTO response = PagedBuildStageRecordDTO.builder()
+                .pageIndex(pageIndex)
+                .pageSize(pageSize)
+                .totalHits(totalHits)
+                .totalPages(totalPages)
+                .content(content)
+                .build();
         return response;
     }
 }

@@ -17,13 +17,8 @@
  */
 package org.jboss.pnc.kafkastore.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import io.quarkus.hibernate.orm.panache.PanacheEntity;
-import io.quarkus.panache.common.Parameters;
-import io.quarkus.panache.common.Sort;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import java.time.Instant;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Index;
@@ -31,8 +26,15 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.time.Instant;
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import io.quarkus.panache.common.Page;
+import io.quarkus.panache.common.Parameters;
+import io.quarkus.panache.common.Sort;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
@@ -63,10 +65,24 @@ public class BuildStageRecord extends PanacheEntity {
         return getForBuildId(String.valueOf(buildId));
     }
 
-    public static List<BuildStageRecord> findNewerThan(Instant lastUpdate) {
+    public static List<BuildStageRecord> findNewerThan(Instant lastUpdate, Integer pageIndex, Integer pageSize) {
         return find(
                 "lastUpdateTime > :lastUpdate",
                 Sort.by("lastUpdateTime").ascending(),
-                Parameters.with("lastUpdate", lastUpdate)).list();
+                Parameters.with("lastUpdate", lastUpdate)).page(Page.of(pageIndex, pageSize)).list();
+    }
+
+    public static Long countNewerThan(Instant lastUpdate) {
+        return find(
+                "lastUpdateTime > :lastUpdate",
+                Sort.by("lastUpdateTime").ascending(),
+                Parameters.with("lastUpdate", lastUpdate)).count();
+    }
+
+    public static Integer countPagesNewerThan(Instant lastUpdate, Integer pageSize) {
+        return find(
+                "lastUpdateTime > :lastUpdate",
+                Sort.by("lastUpdateTime").ascending(),
+                Parameters.with("lastUpdate", lastUpdate)).page(Page.ofSize(pageSize)).pageCount();
     }
 }

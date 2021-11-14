@@ -65,12 +65,22 @@ class BuildStageRecordTest {
         Instant lastUpdateTime = buildStageRecord.getLastUpdateTime();
         log.info("Last update time of inserted build stage record: {}", lastUpdateTime);
 
-        List<BuildStageRecord> postBuildStageRecords = BuildStageRecord.findNewerThan(lastUpdateTime);
+        int pageIndex = 0;
+        int pageSize = 5;
+
+        List<BuildStageRecord> postBuildStageRecords = BuildStageRecord
+                .findNewerThan(lastUpdateTime, pageIndex, pageSize);
+
         log.info("Asserting that no build stage record exists after last update time: {}", lastUpdateTime);
         assertThat(postBuildStageRecords).doesNotContain(buildStageRecord);
 
+        Long totalHits = BuildStageRecord.countNewerThan(lastUpdateTime);
+        Integer totalPages = BuildStageRecord.countPagesNewerThan(lastUpdateTime, pageSize);
+        log.info("Found totalHits: {}, totalPages: {}", totalHits, totalPages);
+
         Instant priorOfLastUpdateTime = lastUpdateTime.minusSeconds(1);
-        List<BuildStageRecord> priorBuildStageRecords = BuildStageRecord.findNewerThan(priorOfLastUpdateTime);
+        List<BuildStageRecord> priorBuildStageRecords = BuildStageRecord
+                .findNewerThan(priorOfLastUpdateTime, pageIndex, pageSize);
         log.info(
                 "Asserting that one build stage record exists after a prior last update time: {}",
                 priorOfLastUpdateTime);
