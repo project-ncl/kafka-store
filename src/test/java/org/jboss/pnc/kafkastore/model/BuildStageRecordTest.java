@@ -18,6 +18,7 @@
 package org.jboss.pnc.kafkastore.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.time.Instant;
@@ -63,41 +64,50 @@ class BuildStageRecordTest {
         BuildStageRecord buildStageRecord = buildStageRecords.get(0);
         assertNotNull(buildStageRecord.getLastUpdateTime());
 
+        BuildStageRecord lastUpdatedBuildStageRecord = buildStageRecord;
         List<BuildStageRecord> allBuildStageRecords = BuildStageRecord.findAll().list();
-        allBuildStageRecords.forEach(bsr -> {
+        for (BuildStageRecord bsr : allBuildStageRecords) {
             log.info("Build stage record found: {}", bsr);
-        });
+            if (bsr.getLastUpdateTime() != null
+                    && bsr.getLastUpdateTime().isAfter(lastUpdatedBuildStageRecord.getLastUpdateTime())) {
+                lastUpdatedBuildStageRecord = bsr;
+            }
+        }
+        ;
 
-        Instant lastUpdateTime = buildStageRecord.getLastUpdateTime();
-        log.info("Last update time of inserted build stage record: {}", lastUpdateTime);
+        log.info("Last update time of all build stage records: {}", lastUpdatedBuildStageRecord.getLastUpdateTime());
 
         int pageIndex = 0;
-        int pageSize = 5;
+        int pageSize = 50;
 
         List<BuildStageRecord> postBuildStageRecords = BuildStageRecord
-                .findNewerThan(lastUpdateTime, pageIndex, pageSize);
+                .findNewerThan(lastUpdatedBuildStageRecord.getLastUpdateTime(), pageIndex, pageSize);
 
-        log.info("Asserting that no build stage record exists after last update time: {}", lastUpdateTime);
-        assertThat(postBuildStageRecords).doesNotContain(buildStageRecord);
+        log.info(
+                "Asserting that no build stage record exists after last update time: {}",
+                lastUpdatedBuildStageRecord.getLastUpdateTime());
+        assertThat(postBuildStageRecords).hasSize(0);
 
-        Long totalHits = BuildStageRecord.countNewerThan(lastUpdateTime);
-        Integer totalPages = BuildStageRecord.countPagesNewerThan(lastUpdateTime, pageSize);
+        Long totalHits = BuildStageRecord.countNewerThan(lastUpdatedBuildStageRecord.getLastUpdateTime());
+        Integer totalPages = BuildStageRecord
+                .countPagesNewerThan(lastUpdatedBuildStageRecord.getLastUpdateTime(), pageSize);
         log.info("Found totalHits: {}, totalPages: {}", totalHits, totalPages);
+        assertEquals(totalHits, 0);
 
-        Instant priorOfLastUpdateTime = lastUpdateTime.minusSeconds(1);
+        Instant priorOfLastUpdateTime = lastUpdatedBuildStageRecord.getLastUpdateTime().minusSeconds(1);
         List<BuildStageRecord> priorBuildStageRecords = BuildStageRecord
                 .findNewerThan(priorOfLastUpdateTime, pageIndex, pageSize);
         log.info(
-                "Asserting that one build stage record exists after a prior last update time: {}",
+                "Asserting that at least one build stage record exists before latest update time: {}",
                 priorOfLastUpdateTime);
-        assertThat(priorBuildStageRecords).contains(buildStageRecord);
+        assertThat(priorBuildStageRecords).contains(lastUpdatedBuildStageRecord);
 
         ObjectMapper mapper = new ObjectMapper().findAndRegisterModules()
                 .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
                 .configure(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE, false)
                 .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        BuildStageRecordDTO dto = mapper.convertValue(buildStageRecord, BuildStageRecordDTO.class);
+        BuildStageRecordDTO dto = mapper.convertValue(lastUpdatedBuildStageRecord, BuildStageRecordDTO.class);
         log.info("Converted buildStageRecord model object to DTO: {}", dto);
     }
 
