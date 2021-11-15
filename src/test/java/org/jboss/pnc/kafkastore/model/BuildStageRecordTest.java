@@ -56,7 +56,7 @@ class BuildStageRecordTest {
     void testLastUpdateTime() {
 
         String buildId = "13";
-        createBuildStageRecordWithBuildId(buildId, "testLastUpdate", 123);
+        createBuildStageRecordWithBuildId(buildId, "testLastUpdate", 123, "processVariant");
         List<BuildStageRecord> buildStageRecords = BuildStageRecord.getForBuildId("13");
         assertThat(buildStageRecords).hasSize(1);
         BuildStageRecord buildStageRecord = buildStageRecords.get(0);
