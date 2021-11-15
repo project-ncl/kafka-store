@@ -29,5 +29,6 @@ public class BuildStageRecordDTO {
     String buildId;
     Instant timestamp;
     Instant lastUpdateTime;
+    String processContextVariant;
 
 }
