@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.google.common.base.Optional;
 
 import io.quarkus.test.junit.QuarkusTest;
 
@@ -61,6 +62,11 @@ class BuildStageRecordTest {
         assertThat(buildStageRecords).hasSize(1);
         BuildStageRecord buildStageRecord = buildStageRecords.get(0);
         assertNotNull(buildStageRecord.getLastUpdateTime());
+
+        List<BuildStageRecord> allBuildStageRecords = BuildStageRecord.findAll().list();
+        allBuildStageRecords.forEach(bsr -> {
+            log.info("Build stage record found: {}", bsr);
+        });
 
         Instant lastUpdateTime = buildStageRecord.getLastUpdateTime();
         log.info("Last update time of inserted build stage record: {}", lastUpdateTime);
