@@ -23,6 +23,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -43,11 +44,16 @@ import lombok.ToString;
 @ToString
 @Table(
         indexes = { @Index(name = "idx_build_ids", columnList = "buildid"),
-                @Index(name = "idx_lastupdate_time", columnList = "lastupdatetime") })
+                @Index(name = "idx_lastupdate_time", columnList = "lastupdatetime") },
+        uniqueConstraints = @UniqueConstraint(
+                name = "uq_buildId_stage_dur_tstamp",
+                columnNames = { "buildid", "buildstage", "duration", "timestamp" }))
 public class BuildStageRecord extends PanacheEntity {
 
     String buildStage;
+
     long duration;
+
     String buildId;
 
     String processContextVariant;

@@ -20,14 +20,18 @@ package org.jboss.pnc.kafkastore.kafka;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.smallrye.common.annotation.Blocking;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.persistence.PersistenceException;
+import javax.transaction.TransactionManager;
 import javax.transaction.Transactional;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -61,32 +65,30 @@ public class Consumer {
      * @throws Exception
      */
     @Timed
+    @Blocking
     @Incoming("duration")
+    @Transactional
     public void consume(String jsonString) {
         System.out.print(".");
 
         try {
             Optional<BuildStageRecord> buildStageRecord = mapper.mapKafkaMsgToBuildStageRecord(jsonString);
 
-            // TODO: handle error better
-            // do this because method running in an IO thread and we can only store a POJO in a worker thread
             buildStageRecord.ifPresent(br -> {
                 log.info(br.toString());
-                CompletableFuture.runAsync(() -> store(br)).exceptionally(e -> {
-                    errCounter.increment();
-                    log.error("Error while saving data", e);
-                    return null;
-                });
+                br.persistAndFlush();
             });
+
+        } catch (PersistenceException e) {
+            errCounter.increment();
+            if (e.getCause() instanceof ConstraintViolationException) {
+                log.error("Kafka-store is receiving duplicate messages", e);
+            } else {
+                log.error("Error while saving data", e);
+            }
         } catch (Exception e) {
             errCounter.increment();
-            log.error("Something wrong happened during consumption", e);
+            log.error("Error while saving data", e);
         }
-    }
-
-    @Timed
-    @Transactional
-    void store(BuildStageRecord message) {
-        message.persist();
     }
 }

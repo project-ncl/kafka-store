@@ -18,6 +18,7 @@
 package org.jboss.pnc.kafkastore.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -26,6 +27,7 @@ import java.util.List;
 
 import javax.transaction.Transactional;
 
+import org.hibernate.exception.ConstraintViolationException;
 import org.jboss.pnc.kafkastore.dto.rest.BuildStageRecordDTO;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -55,6 +57,18 @@ class BuildStageRecordTest {
     }
 
     @Test
+    void testConstraintViolation() {
+        // with
+        Instant now = Instant.now();
+        createBuildStageRecordWithBuildId("1", "test", 123, "processVariant", now);
+
+        // then
+        assertThatThrownBy(() -> createBuildStageRecordWithBuildId("1", "test", 123, "processVariant", now)).getCause() // javax.transaction.RollbackException
+                .getCause() // javax.persistence.PersistenceException
+                .hasCauseInstanceOf(ConstraintViolationException.class);
+    }
+
+    @Test
     void testLastUpdateTime() {
 
         String buildId = "13";
@@ -73,7 +87,6 @@ class BuildStageRecordTest {
                 lastUpdatedBuildStageRecord = bsr;
             }
         }
-        ;
 
         log.info("Last update time of all build stage records: {}", lastUpdatedBuildStageRecord.getLastUpdateTime());
 
@@ -120,11 +133,22 @@ class BuildStageRecordTest {
             String buildStage,
             int duration,
             String processContextVariant) {
+        createBuildStageRecordWithBuildId(buildId, buildStage, duration, processContextVariant, null);
+    }
+
+    @Transactional
+    void createBuildStageRecordWithBuildId(
+            String buildId,
+            String buildStage,
+            int duration,
+            String processContextVariant,
+            Instant timestamp) {
         BuildStageRecord a = new BuildStageRecord();
         a.buildId = buildId;
         a.buildStage = buildStage;
         a.duration = duration;
         a.processContextVariant = processContextVariant;
+        a.timestamp = timestamp;
         a.persist();
     }
 }
