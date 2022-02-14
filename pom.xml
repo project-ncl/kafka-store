@@ -72,7 +72,7 @@
         <surefire-plugin.version>2.22.2</surefire-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <quarkus.version>2.7.1.Final</quarkus.version>
-        <compiler-plugin.version>3.9.0</compiler-plugin.version>
+        <compiler-plugin.version>3.10.0</compiler-plugin.version>
         <maven.compiler.source>11</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
