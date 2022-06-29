@@ -69,8 +69,6 @@ public class Consumer {
     @Incoming("duration")
     @Transactional
     public void consume(String jsonString) {
-        System.out.print(".");
-
         try {
             Optional<BuildStageRecord> buildStageRecord = mapper.mapKafkaMsgToBuildStageRecord(jsonString);
 

@@ -18,6 +18,7 @@
 package org.jboss.pnc.kafkastore.facade;
 
 import io.micrometer.core.annotation.Timed;
+import lombok.extern.slf4j.Slf4j;
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
@@ -29,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @ApplicationScoped
+@Slf4j
 public class BuildMetricsFetcher {
 
     @Timed
@@ -57,7 +59,7 @@ public class BuildMetricsFetcher {
                 cache.computeIfAbsent(getKeyForCache(id, buildStageRecord.getBuildStage()), key -> {
                     // only add build stage if not yet present
                     metric.add(buildStageRecord.getBuildStage());
-                    System.out.println(buildStageRecord.getBuildStage() + ":" + buildStageRecord.getDuration());
+                    log.info(buildStageRecord.getBuildStage() + ":" + buildStageRecord.getDuration());
                     return buildStageRecord.getDuration();
                 });
             }
