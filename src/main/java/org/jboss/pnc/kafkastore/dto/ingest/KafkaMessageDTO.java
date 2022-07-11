@@ -17,6 +17,7 @@
  */
 package org.jboss.pnc.kafkastore.dto.ingest;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class KafkaMessageDTO {
     Long operationTook;
     String loggerName;
 
-    @JsonProperty("@timestamp")
+    @JsonProperty("timestamp")
+    @JsonAlias("@timestamp")
     Instant timestamp;
 }
