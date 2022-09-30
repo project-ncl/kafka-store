@@ -36,6 +36,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import io.micrometer.core.annotation.Timed;
+import io.opentelemetry.extension.annotations.SpanAttribute;
+import io.opentelemetry.extension.annotations.WithSpan;
 
 @ApplicationScoped
 public class BuildStageRecordFetcher {
@@ -48,10 +50,11 @@ public class BuildStageRecordFetcher {
             .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Timed
+    @WithSpan()
     public PagedBuildStageRecordDTO findBuildStageRecordNewerThan(
-            Instant lastUpdateTime,
-            Integer pageIndex,
-            Integer pageSize) {
+            @SpanAttribute(value = "lastUpdateTime") Instant lastUpdateTime,
+            @SpanAttribute(value = "pageIndex") Integer pageIndex,
+            @SpanAttribute(value = "pageSize") Integer pageSize) {
 
         Long totalHits = BuildStageRecord.countNewerThan(lastUpdateTime);
         Integer totalPages = BuildStageRecord.countPagesNewerThan(lastUpdateTime, pageSize);

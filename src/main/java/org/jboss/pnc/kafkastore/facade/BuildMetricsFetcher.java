@@ -18,6 +18,8 @@
 package org.jboss.pnc.kafkastore.facade;
 
 import io.micrometer.core.annotation.Timed;
+import io.opentelemetry.extension.annotations.SpanAttribute;
+import io.opentelemetry.extension.annotations.WithSpan;
 import lombok.extern.slf4j.Slf4j;
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
@@ -34,7 +36,8 @@ import java.util.List;
 public class BuildMetricsFetcher {
 
     @Timed
-    public List<BuildMetricDTO> getMetricForBuildIds(BuildIdDTO buildIdDTO) {
+    @WithSpan()
+    public List<BuildMetricDTO> getMetricForBuildIds(@SpanAttribute(value = "buildIdDTO") BuildIdDTO buildIdDTO) {
 
         List<BuildMetricDTO> response = new LinkedList<>();
 

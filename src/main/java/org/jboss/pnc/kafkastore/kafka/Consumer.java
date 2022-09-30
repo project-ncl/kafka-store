@@ -20,6 +20,8 @@ package org.jboss.pnc.kafkastore.kafka;
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.opentelemetry.extension.annotations.SpanAttribute;
+import io.opentelemetry.extension.annotations.WithSpan;
 import io.smallrye.common.annotation.Blocking;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
@@ -68,7 +70,8 @@ public class Consumer {
     @Blocking
     @Incoming("duration")
     @Transactional
-    public void consume(String jsonString) {
+    @WithSpan()
+    public void consume(@SpanAttribute(value = "jsonString") String jsonString) {
         try {
             Optional<BuildStageRecord> buildStageRecord = mapper.mapKafkaMsgToBuildStageRecord(jsonString);
 

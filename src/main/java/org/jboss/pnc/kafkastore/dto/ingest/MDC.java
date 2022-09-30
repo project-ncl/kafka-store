@@ -38,4 +38,8 @@ public class MDC {
 
     @JsonProperty("process_stage_step")
     String processStageStep;
+
+    String traceId;
+    String spanId;
+    String parentId;
 }
