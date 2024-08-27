@@ -69,7 +69,7 @@
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <surefire-plugin.version>3.4.0</surefire-plugin.version>
+        <surefire-plugin.version>3.5.0</surefire-plugin.version>
         <maven.compiler.parameters>true</maven.compiler.parameters>
         <quarkus.version>3.12.3</quarkus.version>
         <compiler-plugin.version>3.13.0</compiler-plugin.version>
