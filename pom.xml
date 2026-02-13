@@ -165,7 +165,7 @@
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5</artifactId>
+            <artifactId>quarkus-junit</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -193,10 +193,9 @@
                 <groupId>io.quarkus</groupId>
                 <artifactId>quarkus-maven-plugin</artifactId>
                 <version>${quarkus.version}</version>
+                <extensions>true</extensions>
                 <configuration>
                     <finalName>kafka-store</finalName>
-                    <!-- needed to publish to maven central -->
-                    <skipOriginalJarRename>true</skipOriginalJarRename>
                 </configuration>
                 <executions>
                     <execution>
@@ -214,9 +213,9 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${surefire-plugin.version}</version>
                 <configuration>
-                    <systemProperties>
+                    <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                    </systemProperties>
+                    </systemPropertyVariables>
                 </configuration>
             </plugin>
             <plugin>
