@@ -1,9 +1,0 @@
-FROM registry.access.redhat.com/ubi9/openjdk-21-runtime:1.22
-
-USER root
-RUN mkdir /opt/app
-COPY target/kafka-store-runner.jar /opt/app/kafka-store-runner.jar
-
-RUN chmod -R a+rwx /opt/app
-
-USER 1001
