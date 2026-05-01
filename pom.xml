@@ -23,7 +23,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.pnc.kafkastore</groupId>
     <artifactId>kafkastore</artifactId>
-    <version>3.3.9-SNAPSHOT</version>
+    <version>3.3.9</version>
 
     <name>kafkastore</name>
     <description>Quarkus application to dump Kafka messages into a database. A REST endpoint is also provided to query through the database.</description>
@@ -47,7 +47,7 @@
       <connection>scm:git:https://github.com/project-ncl/kafka-store.git</connection>
       <developerConnection>scm:git:git@github.com:project-ncl/kafka-store.git</developerConnection>
       <url>https://github.com/project-ncl/kafka-store/</url>
-      <tag>HEAD</tag>
+      <tag>3.3.9</tag>
     </scm>
 
     <developers>
