@@ -75,8 +75,8 @@
            - both. The version is great for humans, the digest great for
            - pinning the version properly
           -->
-        <jib.base.image.version>1.24-1</jib.base.image.version>
-        <jib.base.image.digest>sha256:356969edbdcdb64289160bb3b3e80760f9f35738085837d53e2bd42886a21d1b</jib.base.image.digest>
+        <jib.base.image.version>1.24-7</jib.base.image.version>
+        <jib.base.image.digest>sha256:5ee73448f86838eecff13f80512b49ff6ea0fa21aaf5d1fa8afe3402fc965e9e</jib.base.image.digest>
         <tagSuffix />
     </properties>
 
