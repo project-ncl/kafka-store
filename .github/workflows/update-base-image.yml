@@ -76,6 +76,7 @@ jobs:
       - name: Update pom.xml
         if: steps.check-image.outputs.update_needed == 'true'
         env:
+          IMAGE: ${{ steps.check-image.outputs.image }}
           NEW_VERSION: ${{ steps.check-image.outputs.new_version }}
           NEW_DIGEST: ${{ steps.check-image.outputs.new_digest }}
         run: |
