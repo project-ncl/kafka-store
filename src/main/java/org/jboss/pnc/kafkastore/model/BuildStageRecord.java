@@ -43,7 +43,8 @@ import lombok.ToString;
 @Entity
 @ToString
 @Table(
-        indexes = { @Index(name = "idx_build_ids", columnList = "buildid"),
+        indexes = {
+                @Index(name = "idx_build_ids", columnList = "buildid"),
                 @Index(name = "idx_lastupdate_time", columnList = "lastupdatetime") },
         uniqueConstraints = @UniqueConstraint(
                 name = "uq_buildId_stage_dur_tstamp",

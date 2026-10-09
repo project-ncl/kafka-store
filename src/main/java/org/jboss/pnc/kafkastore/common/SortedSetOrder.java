@@ -17,11 +17,11 @@
  */
 package org.jboss.pnc.kafkastore.common;
 
-import com.google.common.collect.ImmutableList;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import com.google.common.collect.ImmutableList;
 
 /**
  * Set that preserve relative order of items when a new list is added.
