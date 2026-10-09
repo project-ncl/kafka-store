@@ -17,24 +17,26 @@
  */
 package org.jboss.pnc.kafkastore.kafka;
 
+import java.util.Optional;
+
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.PersistenceException;
+import jakarta.transaction.Transactional;
+
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
+import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+
 import io.micrometer.core.annotation.Timed;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.opentelemetry.instrumentation.annotations.SpanAttribute;
 import io.opentelemetry.instrumentation.annotations.WithSpan;
 import io.smallrye.common.annotation.Blocking;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.microprofile.reactive.messaging.Incoming;
-import org.hibernate.exception.ConstraintViolationException;
-import org.jboss.pnc.kafkastore.mapper.BuildStageRecordMapper;
-import org.jboss.pnc.kafkastore.model.BuildStageRecord;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.persistence.PersistenceException;
-import jakarta.transaction.Transactional;
-import java.util.Optional;
 
 /**
  * Consume from a Kafka topic, parse the data and store it in the database

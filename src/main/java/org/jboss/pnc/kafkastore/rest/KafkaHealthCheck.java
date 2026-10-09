@@ -17,16 +17,17 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
-import io.smallrye.reactive.messaging.health.HealthReport;
-import io.smallrye.reactive.messaging.kafka.KafkaConnector;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
 import org.eclipse.microprofile.health.HealthCheck;
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import org.eclipse.microprofile.health.Liveness;
 import org.eclipse.microprofile.reactive.messaging.spi.Connector;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import io.smallrye.reactive.messaging.health.HealthReport;
+import io.smallrye.reactive.messaging.kafka.KafkaConnector;
 
 /**
  * // The health check prob for kafka store.

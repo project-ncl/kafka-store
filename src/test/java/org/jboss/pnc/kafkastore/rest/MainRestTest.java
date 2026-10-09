@@ -17,10 +17,11 @@
  */
 package org.jboss.pnc.kafkastore.rest;
 
-import io.quarkus.test.junit.QuarkusTest;
+import static org.hamcrest.Matchers.*;
+
 import org.junit.jupiter.api.Disabled;
 
-import static org.hamcrest.Matchers.*;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @Disabled

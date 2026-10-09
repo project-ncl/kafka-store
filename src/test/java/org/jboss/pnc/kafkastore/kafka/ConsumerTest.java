@@ -17,15 +17,16 @@
  */
 package org.jboss.pnc.kafkastore.kafka;
 
-import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.h2.H2DatabaseTestResource;
-import io.quarkus.test.junit.QuarkusTest;
-import org.junit.jupiter.api.Test;
-import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import jakarta.inject.Inject;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.jboss.pnc.kafkastore.model.BuildStageRecord;
+import org.junit.jupiter.api.Test;
+
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.h2.H2DatabaseTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(H2DatabaseTestResource.class)

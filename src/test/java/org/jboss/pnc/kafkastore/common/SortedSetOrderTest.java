@@ -17,12 +17,12 @@
  */
 package org.jboss.pnc.kafkastore.common;
 
-import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
+import org.assertj.core.util.Lists;
+import org.junit.jupiter.api.Test;
 
 public class SortedSetOrderTest {
 

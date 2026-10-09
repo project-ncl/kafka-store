@@ -17,21 +17,24 @@
  */
 package org.jboss.pnc.kafkastore.mapper;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
-import io.micrometer.core.annotation.Timed;
-import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.MeterRegistry;
+import java.io.IOException;
+import java.util.Optional;
+
 import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+
 import org.jboss.pnc.kafkastore.dto.ingest.KafkaMessageDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import java.io.IOException;
-import java.util.Optional;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
 @Slf4j

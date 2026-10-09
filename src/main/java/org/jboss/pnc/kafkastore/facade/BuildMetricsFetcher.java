@@ -17,19 +17,21 @@
  */
 package org.jboss.pnc.kafkastore.facade;
 
-import io.micrometer.core.annotation.Timed;
-import io.opentelemetry.instrumentation.annotations.SpanAttribute;
-import io.opentelemetry.instrumentation.annotations.WithSpan;
-import lombok.extern.slf4j.Slf4j;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+
+import jakarta.enterprise.context.ApplicationScoped;
+
 import org.jboss.pnc.kafkastore.common.SortedSetOrder;
 import org.jboss.pnc.kafkastore.dto.rest.BuildIdDTO;
 import org.jboss.pnc.kafkastore.dto.rest.BuildMetricDTO;
 import org.jboss.pnc.kafkastore.model.BuildStageRecord;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import io.micrometer.core.annotation.Timed;
+import io.opentelemetry.instrumentation.annotations.SpanAttribute;
+import io.opentelemetry.instrumentation.annotations.WithSpan;
+import lombok.extern.slf4j.Slf4j;
 
 @ApplicationScoped
 @Slf4j
