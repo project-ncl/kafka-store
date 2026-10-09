@@ -17,9 +17,9 @@
  */
 package org.jboss.pnc.kafkastore.dto.rest;
 
-import lombok.Data;
-
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public class BuildIdDTO {

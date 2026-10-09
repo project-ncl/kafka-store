@@ -17,10 +17,10 @@
  */
 package org.jboss.pnc.kafkastore.dto.rest;
 
-import lombok.Getter;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
 
 public class BuildMetricDTO {
 
