@@ -21,6 +21,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.List;
 
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
@@ -56,6 +57,7 @@ public class MainRest {
     BuildStageRecordFetcher buildStageRecordFetcher;
 
     @GET
+    @RolesAllowed({ "pnc-users", "pnc-users-admin" })
     public long getCount() {
         return BuildStageRecord.count();
     }
@@ -63,6 +65,7 @@ public class MainRest {
     @POST
     @Path("/builds")
     @Produces(MediaType.APPLICATION_JSON)
+    @RolesAllowed({ "pnc-users", "pnc-users-admin" })
     @Timed
     public List<BuildMetricDTO> getBuildMetricsForBuildId(BuildIdDTO buildIdDTO) {
         return buildMetricsFetcher.getMetricForBuildIds(buildIdDTO);
@@ -70,6 +73,7 @@ public class MainRest {
 
     @GET
     @Path("/build-stages-newer-than-timestamp")
+    @RolesAllowed({ "pnc-users", "pnc-users-admin" })
     public PagedBuildStageRecordDTO getAllBuildStageRecordsNewerThanTimestamp(
             @QueryParam("timestamp") long timestamp,
             @QueryParam("pageIndex") int pageIndex,
