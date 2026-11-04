@@ -223,17 +223,19 @@
         <artifactId>license-maven-plugin</artifactId>
         <version>5.1.2</version>
         <configuration>
-          <properties>
-            <copyright-years>${project.inceptionYear}</copyright-years>
-          </properties>
-          <header>.license-header.txt</header>
-          <excludes>
-            <exclude>.license-header.txt</exclude>
-            <exclude>**/README</exclude>
-            <exclude>**/LICENSE.txt</exclude>
-            <exclude>**/Dockerfile</exclude>
-            <exclude>.github/dependabot.yml</exclude>
-          </excludes>
+          <licenseSets>
+            <licenseSet>
+              <inlineHeader><![CDATA[SPDX-FileCopyrightText: Copyright © ${project.inceptionYear} Red Hat, Inc., and individual contributors as indicated by the @author tags.
+SPDX-License-Identifier: Apache-2.0
+]]></inlineHeader>
+              <excludes>
+                <exclude>**/README</exclude>
+                <exclude>**/LICENSE.txt</exclude>
+                <exclude>**/Dockerfile</exclude>
+                <exclude>.github/dependabot.yml</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
         </configuration>
         <executions>
           <execution>
