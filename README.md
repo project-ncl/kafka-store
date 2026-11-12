@@ -1,4 +1,5 @@
 # kafka store
+
 kafka-store is a Quarkus application for the PNC (Project Newcastle) ecosystem.
 It consumes build-duration messages from a Kafka topic, parses them into `BuildStageRecord`
 rows in a relational database, and exposes a REST API to query build-stage metrics.
