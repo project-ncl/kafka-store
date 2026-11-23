@@ -13,7 +13,7 @@ jobs:
     call-release-job:
       permissions:
         contents: write # needed to push commit and tag back to the repository
-      uses: project-ncl/shared-github-actions/.github/workflows/maven-release.yml@4dc4f499c9c36a24ab93ed7adba2ac3bc9fa09c3 # main
+      uses: project-ncl/shared-github-actions/.github/workflows/maven-release.yml@873bd5368a5f06c5da7f9dcb12ed119b58d85e99 # main
       with:
         ref_to_release: ${{ inputs.ref_to_release }}
         quarkus_jib_image: true
